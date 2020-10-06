@@ -26,6 +26,11 @@ namespace Planets.Services
 
         public async Task<Resident> GetByPlanetIdAndSequenceOrDefaultAsync(int planetId, int sequenceNumber)
         {
+            if (sequenceNumber < 1 || planetId < 1)
+            {
+                throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest);
+            }
+
             var planet = await _planetsService.GetPlanetOrDefaultAsync(planetId);
 
             if(planet == null)
@@ -33,7 +38,7 @@ namespace Planets.Services
                 return null;
             }
 
-            if(planet.Residents.Count() < sequenceNumber)
+            if(planet.Residents.Count() < sequenceNumber || sequenceNumber < 1)
             {
                 throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest);
             }
